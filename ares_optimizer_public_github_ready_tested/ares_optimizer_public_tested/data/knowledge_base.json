@@ -1,0 +1,17 @@
+[
+  {
+    "text": "ARES Optimizer is a decision layer that classifies requests, plans retrieval, reranks context, and routes tasks to the best execution path.",
+    "source": "public_knowledge",
+    "metadata": {"public_weight": 0.2}
+  },
+  {
+    "text": "The public repository demonstrates orchestration architecture while intentionally abstracting proprietary scoring and learning internals.",
+    "source": "public_knowledge",
+    "metadata": {"public_weight": 0.15}
+  },
+  {
+    "text": "A.R.E.S compatibility includes local-first operation and support for OpenAI-style backend adapters in private deployments.",
+    "source": "public_knowledge",
+    "metadata": {"public_weight": 0.15}
+  }
+]

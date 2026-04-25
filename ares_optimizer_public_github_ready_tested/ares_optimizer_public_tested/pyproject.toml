@@ -1,0 +1,25 @@
+[project]
+name = "ares-optimizer-public"
+version = "1.0.0"
+description = "Public-safe AI routing and retrieval optimizer showcase for A.R.E.S."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Kai Harris"}]
+keywords = ["ai", "machine-learning", "llm", "routing", "rag", "fastapi", "agent"]
+dependencies = [
+  "fastapi>=0.110",
+  "uvicorn[standard]>=0.29",
+  "pydantic>=2.6"
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "httpx>=0.27"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"

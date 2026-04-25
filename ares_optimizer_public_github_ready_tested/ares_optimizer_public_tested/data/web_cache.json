@@ -1,0 +1,7 @@
+[
+  {
+    "text": "Public-safe cached context is used only for demonstration. Production web retrieval is intentionally not exposed in this repository.",
+    "source": "public_cache",
+    "metadata": {"public_weight": 0.05}
+  }
+]
