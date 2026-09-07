@@ -3,19 +3,20 @@ from __future__ import annotations
 from fastapi import FastAPI
 
 from app import AresOptimizer
-from app.schemas import UserRequest
+from app.schemas import ChatResponse, UserRequest
+
 
 app = FastAPI(
-    title="ARES Optimizer Public Showcase",
-    description="Public-safe AI routing and retrieval optimizer for A.R.E.S.",
-    version="1.0.0-public",
+    title="ARES Optimizer",
+    description="Deterministic task classification, retrieval, and model-routing API.",
+    version="1.1.0",
 )
 optimizer = AresOptimizer()
 
 
 @app.get("/health")
 def health() -> dict[str, str]:
-    return {"status": "ok", "service": "ares-optimizer-public"}
+    return {"status": "ok", "service": "ares-optimizer"}
 
 
 @app.get("/healthz")
@@ -24,7 +25,7 @@ def healthz() -> dict[str, str]:
 
 
 @app.post("/route")
-def route(request: UserRequest):
+def route(request: UserRequest) -> dict:
     result = optimizer.handle(request)
     return {
         "trace_id": result.trace_id,
@@ -35,6 +36,6 @@ def route(request: UserRequest):
     }
 
 
-@app.post("/chat")
-def chat(request: UserRequest):
-    return optimizer.handle(request).model_dump()
+@app.post("/chat", response_model=ChatResponse)
+def chat(request: UserRequest) -> ChatResponse:
+    return optimizer.handle(request)

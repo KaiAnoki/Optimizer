@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field
+from typing import Any
+
+from pydantic import BaseModel, Field, field_validator
 
 
 class TaskType(str, Enum):
@@ -24,20 +25,28 @@ class RouteType(str, Enum):
 
 
 class UserRequest(BaseModel):
-    message: str = Field(..., min_length=1)
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    message: str = Field(min_length=1, max_length=10_000)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("message")
+    @classmethod
+    def message_must_contain_text(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("message must contain text")
+        return cleaned
 
 
 class TaskPrediction(BaseModel):
     label: TaskType
     confidence: float = Field(ge=0.0, le=1.0)
-    public_reason: str
+    reason: str
 
 
 class RetrievalPlan(BaseModel):
     enabled: bool
     source: str = "none"
-    top_k: int = 0
+    top_k: int = Field(default=0, ge=0, le=20)
     query_rewrite: bool = False
     rerank: bool = False
 
@@ -46,13 +55,13 @@ class RetrievedChunk(BaseModel):
     text: str
     source: str
     score: float
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class RouteDecision(BaseModel):
     route: RouteType
     confidence: float = Field(ge=0.0, le=1.0)
-    public_reason: str
+    reason: str
 
 
 class AgentStep(BaseModel):
@@ -66,7 +75,6 @@ class ChatResponse(BaseModel):
     task: TaskPrediction
     retrieval: RetrievalPlan
     route: RouteDecision
-    context_used: List[RetrievedChunk] = Field(default_factory=list)
+    context_used: list[RetrievedChunk] = Field(default_factory=list)
     trace_id: str
-    agent_trace: List[AgentStep] = Field(default_factory=list)
-    public_note: str = "Public showcase build: proprietary ranking and optimization internals are intentionally abstracted."
+    agent_trace: list[AgentStep] = Field(default_factory=list)
