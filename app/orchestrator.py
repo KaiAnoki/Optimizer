@@ -2,23 +2,23 @@ from __future__ import annotations
 
 import uuid
 
-from .classifier import PublicTaskClassifier
+from .classifier import TaskClassifier
 from .model_router import ModelRouter
-from .reranker import PublicReranker
-from .responder import PublicResponder
+from .reranker import Reranker
+from .responder import Responder
 from .retrieval_controller import RetrievalController
-from .retriever import PublicRetriever
+from .retriever import Retriever
 from .schemas import AgentStep, ChatResponse, UserRequest
 
 
 class AresOptimizer:
     def __init__(self) -> None:
-        self.classifier = PublicTaskClassifier()
+        self.classifier = TaskClassifier()
         self.retrieval_controller = RetrievalController()
-        self.retriever = PublicRetriever()
-        self.reranker = PublicReranker()
+        self.retriever = Retriever()
+        self.reranker = Reranker()
         self.router = ModelRouter()
-        self.responder = PublicResponder()
+        self.responder = Responder()
 
     def handle(self, request: UserRequest) -> ChatResponse:
         trace_id = request.metadata.get("trace_id") or str(uuid.uuid4())
@@ -39,7 +39,7 @@ class AresOptimizer:
         trace.append(AgentStep(name="model_router", status="ok", detail=route.route.value))
 
         answer = self.responder.generate(request.message, task, route, context)
-        trace.append(AgentStep(name="responder", status="ok", detail="public demo response generated"))
+        trace.append(AgentStep(name="responder", status="ok", detail="routing response generated"))
 
         return ChatResponse(
             answer=answer,
